@@ -118,10 +118,10 @@ class CacheService implements EventManagerAwareInterface
         $event = $this->createCacheEvent(CacheEvent::EVENT_SHOULDCACHE, $mvcEvent);
 
         $results = $this->getEventManager()->triggerUntil($event, function ($result) {
-            return $result;
+            return !$result;
         });
 
-        if ($results->stopped()) {
+        if ($results->count() > 0) {
             return $results->last();
         }
 
