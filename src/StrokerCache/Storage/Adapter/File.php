@@ -10,8 +10,9 @@ namespace StrokerCache\Storage\Adapter;
 
 use SplFileInfo;
 use Zend\Cache\Storage\Adapter\AbstractAdapter;
+use Zend\Cache\Storage\FlushableInterface;
 
-class File extends AbstractAdapter
+class File extends AbstractAdapter implements FlushableInterface
 {
     /**
      * {@inheritDoc}
@@ -95,5 +96,13 @@ class File extends AbstractAdapter
         unlink($file->getPathname());
 
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function flush()
+    {
+        exec('rm -rf ' . escapeshellarg($this->getOptions()->getBaseDirectory() . DIRECTORY_SEPARATOR) . '*');
     }
 }
