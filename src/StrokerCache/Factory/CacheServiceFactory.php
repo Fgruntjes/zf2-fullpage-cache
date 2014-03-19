@@ -16,6 +16,7 @@ use StrokerCache\IdGenerator\IdGeneratorPluginManager;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Stdlib\AbstractOptions;
 
 class CacheServiceFactory implements FactoryInterface
 {
@@ -70,8 +71,13 @@ class CacheServiceFactory implements FactoryInterface
             foreach ($strategies['enabled'] as $alias => $options) {
                 if (is_numeric($alias)) {
                     $alias = $options;
+                    $options = array();
                 }
                 $strategy = $strategyPluginManager->get($alias);
+                if($strategy instanceof AbstractOptions)
+                {
+                    $strategy->setFromArray($options);
+                }
 
                 if ($strategy instanceof ListenerAggregateInterface) {
                     $listener = $strategy;
